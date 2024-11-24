@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class TopoSort {
+    private static int reverseCounter; // only for graph_DFS to use
     private static class Node {
         public int value;
         public Node next;
@@ -38,7 +39,13 @@ public class TopoSort {
         String inputFileName = args[0];
         LinkedList[] G = fileReader(inputFileName);
 
+        int[] topologicalOrder = DFS(G);
 
+        for (int j = 0; j < G.length; j++) {
+            System.out.print(topologicalOrder[j]);
+            if (j < (G.length - 1))
+                System.out.print(", ");
+        }
     }
 
     private static LinkedList[] fileReader(String inputFileName) throws IOException {
@@ -61,7 +68,7 @@ public class TopoSort {
         return G;
     }
 
-    public static int lineCounter(String inputFileName) throws IOException {
+    private static int lineCounter(String inputFileName) throws IOException {
         int counter = 0;
 
         try(BufferedReader inputFile = new BufferedReader(new FileReader(inputFileName))) {
@@ -71,5 +78,32 @@ public class TopoSort {
         }
 
         return counter;
+    }
+
+    private static int[] DFS(LinkedList[] G) {
+        boolean[] visited = new boolean[G.length];
+        int[] topologicalOrder = new int[G.length];
+        reverseCounter = G.length - 1;
+
+        for (int index = 0; index < G.length; index++) {
+            if (!(visited[index]))
+                graph_DFS(G, index, visited, topologicalOrder);
+        }
+
+        return topologicalOrder;
+    }
+
+    private static void graph_DFS(LinkedList[] G, int s, boolean[] visited, int[] topologicalOrder) {
+        visited[s] = true;
+        Node cur = G[s].head;
+
+        while (cur != null) {
+            if (!(visited[cur.value]))
+                graph_DFS(G, cur.value, visited, topologicalOrder);
+            cur = cur.next;
+        }
+
+        topologicalOrder[reverseCounter] = s;
+        reverseCounter--;
     }
 }

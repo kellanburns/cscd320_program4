@@ -4,3 +4,5 @@ This program creates a topologically sorted representation of a directed acyclic
 traversal of points in the sorted order. While multiple outputs are possible for a given DAG, all outputs are guaranteed to maintain the ordering where all children of a node are displayed before 
 the parent node.
 
+Usage: javac Toposort.java 
+       java Toposort <input.txt>
